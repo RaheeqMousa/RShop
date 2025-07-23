@@ -1,0 +1,6 @@
+@RShop.PL_HostAddress = http://localhost:5013
+
+GET {{RShop.PL_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
