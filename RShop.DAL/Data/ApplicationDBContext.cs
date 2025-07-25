@@ -17,13 +17,14 @@ namespace RShop.DAL.Data
         }
 
         public DbSet<Category> Categories { get; set; }
-        //public DbSet<CategoryTranslation> CategoryTranslations { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("Server=localhost;Database=RSHOP;" +
-                    "Trusted_Connection=True;TrustServerCertificate=True;");
+            modelBuilder.Entity<Category>().ToTable("Category");
         }
+
+
 
     }
 }

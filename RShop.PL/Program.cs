@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore; // Add this
-using RShop.DAL.Repositories; // Already added
-using RShop.DAL.Data; // Already added
-using RShop.BLL.Services; // Add this
+using Microsoft.EntityFrameworkCore; 
+using RShop.DAL.Repositories;
+using RShop.DAL.Data; 
+using RShop.BLL.Services; 
+using Scalar;
 
 namespace RShop.PL
 {
@@ -35,6 +36,7 @@ namespace RShop.PL
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                //app.MapScalarApiReference();
             }
 
             app.UseHttpsRedirection();

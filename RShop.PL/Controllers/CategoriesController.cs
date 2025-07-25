@@ -64,6 +64,19 @@ namespace RShop.PL.Controllers
                 return NotFound(ex.Message);
             }
         }
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                var deletedId = categoryService.DeleteCategory(id);
+                return Ok(deletedId);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
 
         [HttpPatch("{id}/toggle-status")]
         public IActionResult ToggleStatus(int id)
