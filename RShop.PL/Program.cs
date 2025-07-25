@@ -1,4 +1,13 @@
 
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore; // Add this
+using RShop.DAL.Repositories; // Already added
+using RShop.DAL.Data; // Already added
+using RShop.BLL.Services; // Add this
+
 namespace RShop.PL
 {
     public class Program
@@ -14,6 +23,11 @@ namespace RShop.PL
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddDbContext<ApplicationDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
+            builder.Services.AddScoped<ICategoryService,CategoryService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
