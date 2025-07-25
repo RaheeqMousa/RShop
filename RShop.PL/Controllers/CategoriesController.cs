@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using RShop.BLL.Services;
+using RShop.BLL.Services.Interfaces;
 using RShop.DAL.DTO.Requests;
 
 namespace RShop.PL.Controllers

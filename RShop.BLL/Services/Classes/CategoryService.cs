@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RShop.DAL.DTO.Requests;
-using RShop.BLL.Services;
 using RShop.DAL.Repositories;
 using RShop.DAL.DTO.Responses;
 using Mapster;
 using RShop.DAL.Models;
 
-namespace RShop.BLL.Services
+namespace RShop.BLL.Services.Classes
 {
 
     public class CategoryService : ICategoryService
@@ -19,7 +18,7 @@ namespace RShop.BLL.Services
 
         public CategoryService(ICategoryRepository request)
         {
-            this.categoryRepository = request;
+            categoryRepository = request;
         }
 
         public int CreateCategory(CategoryRequest request)

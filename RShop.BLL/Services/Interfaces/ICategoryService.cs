@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using RShop.DAL.DTO.Requests;
 using RShop.DAL.DTO.Responses;
 
-namespace RShop.BLL.Services
+namespace RShop.BLL.Services.Interfaces
 {
     public interface ICategoryService
     {

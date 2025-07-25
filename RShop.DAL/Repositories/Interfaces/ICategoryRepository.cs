@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RShop.DAL.Models;
 
-namespace RShop.DAL.Repositories
+namespace RShop.DAL.Repositories.Interfaces
 {
     public interface ICategoryRepository
     {

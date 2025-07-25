@@ -8,6 +8,7 @@ using RShop.DAL.Repositories;
 using RShop.DAL.Data; 
 using RShop.BLL.Services; 
 using Scalar;
+using RShop.BLL.Services.Classes;
 
 namespace RShop.PL
 {
