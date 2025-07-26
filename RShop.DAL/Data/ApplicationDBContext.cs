@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RShop.DAL.Models;
 
+
 namespace RShop.DAL.Data
 {
     public class ApplicationDBContext : DbContext

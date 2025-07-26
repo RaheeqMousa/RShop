@@ -18,7 +18,7 @@ namespace RShop.PL.Controllers
         [HttpGet]
         public IActionResult GetAllCategories()
         {
-            var categories = categoryService.GetAllCategories();
+            var categories = categoryService.GetAll();
             return Ok(categories);
         }
 
@@ -27,7 +27,7 @@ namespace RShop.PL.Controllers
         {
             try
             {
-                var category = categoryService.GetCategoryById(id);
+                var category = categoryService.GetById(id);
                 return Ok(category);
             }
             catch (KeyNotFoundException ex)
@@ -43,7 +43,7 @@ namespace RShop.PL.Controllers
             {
                 return BadRequest("Invalid category data.");
             }
-            var id = categoryService.CreateCategory(request);
+            var id = categoryService.Create(request);
             return CreatedAtAction(nameof(Get), new { id }, null);
         }
 
@@ -56,7 +56,7 @@ namespace RShop.PL.Controllers
             }
             try
             {
-                var updatedId = categoryService.UpdateCategory(id, request);
+                var updatedId = categoryService.Update(id, request);
                 return Ok(updatedId);
             }
             catch (KeyNotFoundException ex)
@@ -69,7 +69,7 @@ namespace RShop.PL.Controllers
         {
             try
             {
-                var deletedId = categoryService.DeleteCategory(id);
+                var deletedId = categoryService.Delete(id);
                 return Ok(deletedId);
             }
             catch (KeyNotFoundException ex)

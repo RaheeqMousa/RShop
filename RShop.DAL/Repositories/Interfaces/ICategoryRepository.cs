@@ -7,13 +7,9 @@ using RShop.DAL.Models;
 
 namespace RShop.DAL.Repositories.Interfaces
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository: IGenericRepository<Category>
     {
-        int Add(Category category);
-        IEnumerable<Category> getAll(bool withTracking=false);
-        Category getById(int Id);
-        int Remove(Category category);
-        int Update(Category category);
+        
         
     }
 }

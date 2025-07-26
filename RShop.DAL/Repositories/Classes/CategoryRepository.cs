@@ -11,7 +11,7 @@ using RShop.DAL.Repositories.Classes;
 
 namespace RShop.DAL.Repositories.Classes
 {
-    public class CategoryRepository : GenericRepository<Brand>, ICategoryRepository
+    public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
     {
 
         public CategoryRepository(ApplicationDBContext dbcontext):base(dbcontext)

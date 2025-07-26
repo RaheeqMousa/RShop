@@ -12,10 +12,9 @@ using RShop.DAL.Repositories.Interfaces;
 
 namespace RShop.BLL.Services.Classes
 {
-
-    public class CategoryService : GenericService<CategoryRequest, CategoryResponse, Category>, ICategoryService
+    public class BrandService : GenericService<BrandRequest, BrandResponse, Brand>, IBrandService
     {
-        public CategoryService(ICategoryRepository request):base(request)
+        public BrandService(IBrandRepository request) : base(request)
         {
 
         }

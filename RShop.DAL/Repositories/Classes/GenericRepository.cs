@@ -43,6 +43,22 @@ namespace RShop.DAL.Repositories.Classes
             return context.SaveChanges();
         }
 
+        public bool ToggleStatus(int id)
+        {
+
+            var entity = context.Set<T>().Find(id);
+            if (entity == null)
+            {
+                return false; // Entity not found
+            }
+
+            entity.Status = (entity.Status == Status.Active) ? Status.Inactive : Status.Active;
+
+            context.Set<T>().Update(entity);
+            context.SaveChanges();
+            return true; // Status toggled successfully
+        }
+
         public int Update(T entity)
         {
             context.Set<T>().Update(entity);
