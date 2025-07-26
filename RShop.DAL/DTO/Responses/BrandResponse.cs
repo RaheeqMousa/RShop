@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace RShop.DAL.DTO.Responses
 {
-    class BrandResponse
+    public class BrandResponse
     {
+        public int id { get; set; }
+        public string name { get; set; }
     }
 }

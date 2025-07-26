@@ -14,6 +14,7 @@ namespace RShop.DAL.Repositories.Interfaces
         T? getById(int Id);
         int Update(T entity);
         int Remove(T entity);
+        bool ToggleStatus(int id);
 
     }
 }
