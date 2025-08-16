@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RShop.BLL.Services.Interfaces;
 using RShop.DAL.DTO.Requests;
 
-namespace RShop.PL.Controllers
+namespace RShop.PL.Areas.Admin.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[area]/[controller]")]
     [ApiController]
+    [Area("Admin")]
+    [Authorize("Admin")]
     public class BrandsController : ControllerBase
     {
         private readonly IBrandService brandService;
@@ -64,7 +67,6 @@ namespace RShop.PL.Controllers
                 return NotFound(ex.Message);
             }
         }
-
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

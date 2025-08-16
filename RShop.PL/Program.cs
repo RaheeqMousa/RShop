@@ -10,6 +10,16 @@ using RShop.BLL.Services.Classes;
 using RShop.BLL.Services.Interfaces;
 using RShop.DAL.Repositories.Classes;
 using RShop.DAL.Repositories.Interfaces;
+using RShop.DAL.Utils;
+using RShop.DAL.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using RShop.BLL.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using RShop.PL.Utils;
+using Microsoft.AspNetCore.Identity.UI.Services;
+
 
 namespace RShop.PL
 {
@@ -29,10 +39,46 @@ namespace RShop.PL
             builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
             builder.Services.AddScoped<ICategoryService,CategoryService>();
+            builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+            builder.Services.AddScoped<IBrandService, BrandService>();
+            builder.Services.AddScoped<ISeedData, SeedData>();
+            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<IEmailSender, EmailSetting>();
+
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDBContext>().AddDefaultTokenProviders();
+
+
+
+            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                      .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                      .AddEnvironmentVariables();
+
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // this tells us that the JWT Bearer token will be used for authentication
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // used to return `401 Unauthorized` response
+            })
+
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                            ValidAudience = builder.Configuration["Jwt:Audience"],
+                            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("qRLfbtkXW9b6cSMlrj5SqzbrTqBF7ude"))
+                        };
+                    });
             var app = builder.Build();
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -41,6 +87,10 @@ namespace RShop.PL
                 app.UseSwaggerUI();
                 //app.MapScalarApiReference();
             }
+
+            var scope = app.Services.CreateScope();
+            var ObjectSeedData= scope.ServiceProvider.GetRequiredService<ISeedData>();
+            ObjectSeedData.DataSeedingAsync();
 
             app.UseHttpsRedirection();
 
