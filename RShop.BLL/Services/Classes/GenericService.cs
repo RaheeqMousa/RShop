@@ -40,7 +40,7 @@ namespace RShop.BLL.Services.Classes
             return genericRepository.Remove(entity);
         }
 
-        public IEnumerable<TResponse> GetAll()
+        public IEnumerable<TResponse> GetAll(bool onlyActive=false)
         {
             var entity = genericRepository.getAll();
             return entity.Adapt<IEnumerable<TResponse>>();
