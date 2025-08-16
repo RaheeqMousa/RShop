@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RShop.DAL.DTO.Requests
+namespace RShop.DAL.DTO.Responses
 {
-    public class CategoryRequest
+    class RegisterResponse
     {
-        public string Name { get; set; }
     }
 }

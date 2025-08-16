@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RShop.DAL.DTO.Requests
+namespace RShop.DAL.Utils
 {
-    public class CategoryRequest
+    public interface ISeedData
     {
-        public string Name { get; set; }
+        Task DataSeedingAsync();
+        Task IdentityDataSeeding();
     }
 }
