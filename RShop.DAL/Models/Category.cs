@@ -10,5 +10,7 @@ namespace RShop.DAL.Models
     {
         public string Name { get; set; }
 
+        public List<Product> Products { get; set; } = new List<Product>();
+
     }
 }

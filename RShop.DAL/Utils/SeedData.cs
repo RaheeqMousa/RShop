@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 using Microsoft.EntityFrameworkCore;
 using RShop.DAL.Data;
+using RShop.DAL.DTO.Requests;
 using RShop.DAL.Models;
 
 namespace RShop.DAL.Utils
@@ -66,13 +67,15 @@ namespace RShop.DAL.Utils
             if (!await _context.Users.AnyAsync()) {
                 var user1=new ApplicationUser() { 
                     Email="raheeqmousa99@gmail.com",
-                    FullName="RaheeqMousa",
+                    UserName = "Raheeq",
+                    FullName ="RaheeqMousa",
                     PhoneNumber="972598411518",
                     EmailConfirmed = true
                 };
                 var user2 = new ApplicationUser()
                 {
                     Email = "adnanmousa99@gmail.com",
+                    UserName = "Adnan",
                     FullName = "AdnanMousa",
                     PhoneNumber = "123456789",
                     EmailConfirmed = true
@@ -81,17 +84,19 @@ namespace RShop.DAL.Utils
                 var user3 = new ApplicationUser()
                 {
                     Email = "mohammedmousa99@gmail.com",
+                    UserName = "MohammedMousa",
                     FullName = "MohammedMousa",
                     PhoneNumber = "123456789",
                     EmailConfirmed = true
                 };
 
-                await _userManager.CreateAsync(user1, "raheeq");
-                await _userManager.CreateAsync(user2, "adnan");
-                await _userManager.CreateAsync(user3, "mohammed");
+                await _userManager.CreateAsync(user1, "Raheeq@1");
+                await _userManager.CreateAsync(user2, "Adnan@123");
+                await _userManager.CreateAsync(user3, "Mohammed@123");
 
                 await _userManager.AddToRoleAsync(user2, "Admin");
                 await _userManager.AddToRoleAsync(user3, "Manager");
+                await _userManager.AddToRoleAsync(user1, "Customer");
             }
 
             await _context.SaveChangesAsync();
