@@ -9,6 +9,7 @@ using RShop.DAL.DTO.Requests;
 using RShop.DAL.DTO.Responses;
 using RShop.DAL.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Identity.Data;
 
 
 namespace RShop.BLL.Services.Classes
@@ -27,7 +28,7 @@ namespace RShop.BLL.Services.Classes
 
         }
 
-        public async Task<UserResponse> LoginAsync(LoginRequest loginRequest)
+        public async Task<UserResponse> LoginAsync(DAL.DTO.Requests.LoginRequest loginRequest)
         {
             var user = await _userManager.FindByEmailAsync(loginRequest.Email);
             if (user == null)
@@ -69,7 +70,7 @@ namespace RShop.BLL.Services.Classes
             }
         }
 
-        public async Task<UserResponse> RegisterAsync(RegisterRequest registerRequest)
+        public async Task<UserResponse> RegisterAsync(RShop.DAL.DTO.Requests.RegisterRequest registerRequest)
         {
             var user = new ApplicationUser()
             {
@@ -119,10 +120,10 @@ namespace RShop.BLL.Services.Classes
             var Roles = await _userManager.GetRolesAsync(user);
             foreach (var role in Roles)
             {
-                Claims.Add(new Claim("Role", role));
+                Claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var secretKeyString = _configuration["SecretKey"];
+            var secretKeyString = _configuration["jwtOptions:SecretKey"];
 
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKeyString));
             var creds = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -137,6 +138,54 @@ namespace RShop.BLL.Services.Classes
 
             return new JwtSecurityTokenHandler().WriteToken(token);
 
+        }
+
+        public async Task<bool> ForgotPassword(ForgotPasswordRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+            var random = new Random();
+            var code = random.Next(1000, 9999).ToString();
+            user.CodeResetPassword = code;
+            user.PasswordResetCodeExpiry = DateTime.UtcNow.AddMinutes(15); // Code valid for 15 minutes
+            //UtcNow is used to ensure the code is valid across different time zones
+
+            await _userManager.UpdateAsync(user);
+            // Send email with the code
+            await _emailSender.SendEmailAsync(user.Email, "Reset Password",
+                $"<h1>Hello {user.UserName}</h1>" +
+                $"<p>Your reset password code is: <strong>{code}</strong></p>" +
+                $"<p>This code is valid for 15 minutes.</p>");
+
+            return true;
+        }
+
+        public async Task<bool> ResetPassword(ResetPasswordRequest request) { 
+            var user=_userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return false;
+            }
+            if(user.Result.CodeResetPassword != request.ResetCode)
+            {
+                return false;
+            }
+            if (user.Result.PasswordResetCodeExpiry < DateTime.UtcNow)
+            {
+                return false;
+            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user.Result);
+            var resetResult= await _userManager.ResetPasswordAsync(user.Result,token, request.NewPassword);
+            if (resetResult.Succeeded) {
+                await _emailSender.SendEmailAsync(request.Email, "Password Reset Successful",
+                    $"<h1>Hello {user.Result.UserName}</h1>" +
+                    $"<p>Your password has been reset successfully.</p>");
+            }
+
+            return true;
         }
     }
     
