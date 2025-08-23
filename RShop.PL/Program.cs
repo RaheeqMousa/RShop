@@ -6,8 +6,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using RShop.DAL.Data;
 using Scalar;
-using RShop.BLL.Services.Classes;
 using RShop.BLL.Services.Interfaces;
+using RShop.BLL.Services.Classes;
 using RShop.DAL.Repositories.Classes;
 using RShop.DAL.Repositories.Interfaces;
 using RShop.DAL.Utils;
@@ -19,13 +19,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using RShop.PL.Utils;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using RShop.BLL.Interfaces;
+using RShop.BLL.Classes;
 
 
 namespace RShop.PL
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -39,18 +41,20 @@ namespace RShop.PL
             builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            builder.Services.AddScoped<ISeedData, SeedData>();
             builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
             builder.Services.AddScoped<ICategoryService,CategoryService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IBrandService, BrandService>();
-            builder.Services.AddScoped<ISeedData, SeedData>();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IEmailSender, EmailSetting>();
 
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDBContext>().AddDefaultTokenProviders();
-
 
 
             builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -90,12 +94,14 @@ namespace RShop.PL
 
             var scope = app.Services.CreateScope();
             var ObjectSeedData= scope.ServiceProvider.GetRequiredService<ISeedData>();
-            ObjectSeedData.DataSeedingAsync();
+            await ObjectSeedData.DataSeedingAsync();
+            await ObjectSeedData.IdentityDataSeeding();
 
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
+            app.UseStaticFiles();
 
             app.MapControllers();
 
