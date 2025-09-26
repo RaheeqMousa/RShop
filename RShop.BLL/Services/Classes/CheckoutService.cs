@@ -52,9 +52,8 @@ namespace RShop.BLL.Services.Classes
                         totalPrice = (double)(item.Product.Price * item.count)
                     };
                     orderItems.Add(orderItem);
-
                 }
-                await orderIemRepository.AddRangeAsync(orderItem);
+                await orderIemRepository.AddRangeAsync(orderItems);
 
                 body = $"<h1>Your payment was successful. Thank you for shopping with us!</h1><p>Your payment for order {OrderId}</p>";
             }
