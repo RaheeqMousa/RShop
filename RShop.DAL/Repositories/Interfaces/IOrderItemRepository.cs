@@ -9,6 +9,6 @@ namespace RShop.DAL.Repositories.Interfaces
 {
     public interface IOrderItemRepository
     {
-        Task AddAsync(OrderItems orderItem);
+        Task AddRangeAsync(List<OrderItems> orderItem);
     }
 }
