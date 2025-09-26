@@ -36,7 +36,7 @@ namespace RShop.PL.Areas.Identity.Controllers
         //or return Task<IActionResult> RegisterAsync([FromBody] RegisterRequest registerRequest)
         public async Task<ActionResult<UserResponse>> RegisterAsync([FromBody] RegisterRequest registerRequest)
         {
-            var userResponse = await authenticationService.RegisterAsync(registerRequest);
+            var userResponse = await authenticationService.RegisterAsync(registerRequest, Request);
             return Ok(userResponse);
         }
 
