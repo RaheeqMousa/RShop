@@ -10,6 +10,7 @@ using RShop.DAL.DTO.Responses;
 using RShop.DAL.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Http;
 
 
 namespace RShop.BLL.Services.Classes
@@ -70,7 +71,7 @@ namespace RShop.BLL.Services.Classes
             }
         }
 
-        public async Task<UserResponse> RegisterAsync(RShop.DAL.DTO.Requests.RegisterRequest registerRequest)
+        public async Task<UserResponse> RegisterAsync(RShop.DAL.DTO.Requests.RegisterRequest registerRequest, HttpRequest request )
         {
             var user = new ApplicationUser()
             {
@@ -89,7 +90,7 @@ namespace RShop.BLL.Services.Classes
                 var encodedToken = Uri.EscapeDataString(token);
 
                 // Create confirmation URL
-                var emailUrl = $"https://localhost:7216/api/identity/Account/ConfirmEmail?token={encodedToken}&userId={user.Id}";
+                var emailUrl = $"{request.Scheme}:{request.Host}/api/identity/Account/ConfirmEmail?token={encodedToken}&userId={user.Id}";
 
                 // Send confirmation email
                 await _emailSender.SendEmailAsync(user.Email, "Confirm your email",
@@ -112,9 +113,9 @@ namespace RShop.BLL.Services.Classes
         {
             var Claims = new List<Claim>()
             {
-                new Claim("Email", user.Email),
-                new Claim("Name", user.UserName),
-                new Claim("Id", user.Id)
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
             var Roles = await _userManager.GetRolesAsync(user);
@@ -187,6 +188,7 @@ namespace RShop.BLL.Services.Classes
 
             return true;
         }
+
     }
     
 }
