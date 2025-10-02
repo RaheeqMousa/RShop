@@ -11,12 +11,32 @@ using RShop.DAL.Repositories.Classes;
 
 namespace RShop.DAL.Repositories.Classes
 {
-    public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
+    public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
 
-        public CategoryRepository(ApplicationDBContext dbcontext):base(dbcontext)
-        {
+        private readonly ApplicationDBContext _context;
 
+        public ProductRepository(ApplicationDBContext dbcontext):base(dbcontext)
+        {
+            _context = dbcontext;
         }
+
+        public async Task DecreaseQuantityAsync(List<(int productId, int quantity)> items)
+        {
+            var productIds = items.Select(i => i.productId).ToList();
+            var products = await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
+            foreach(var product in products)
+            {
+                var item = items.First(i=> i.productId==product.Id);
+                    if (product.quantity < item.quantity)
+                    {
+                        throw new Exception($"Not enough quantity in stock for product {product.Name}.");
+                    }
+                    product.quantity -= item.quantity;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

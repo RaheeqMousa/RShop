@@ -11,12 +11,14 @@ using RShop.DAL.Repositories.Classes;
 
 namespace RShop.DAL.Repositories.Classes
 {
-    public class ProductRepository : GenericRepository<Product>, IProductRepository
+    public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
     {
 
-        public ProductRepository(ApplicationDBContext dbcontext):base(dbcontext)
+        public CategoryRepository(ApplicationDBContext dbcontext):base(dbcontext)
         {
 
         }
+
+
     }
 }

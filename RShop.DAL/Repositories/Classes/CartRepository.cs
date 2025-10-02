@@ -21,6 +21,14 @@ namespace RShop.DAL.Repositories.Classes
             return await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> ClearCartAsync(string UserId)
+        {
+            var userCarts = _context.Carts.Where(c => c.UserId == UserId).ToList();
+            _context.Carts.RemoveRange(userCarts);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<List<Cart>> GetUserCartAsync(string UserId)
         {
 

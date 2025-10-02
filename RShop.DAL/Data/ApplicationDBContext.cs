@@ -21,6 +21,7 @@ namespace RShop.DAL.Data
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItems> OrderItems { get; set; }
+        public DbSet<ApplicationUser> users { get; set; }
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
                : base(options)
         {

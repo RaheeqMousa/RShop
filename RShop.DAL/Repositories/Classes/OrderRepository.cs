@@ -25,5 +25,26 @@ namespace RShop.BLL.Services.Classes
             return orders;
         }
 
+        public async Task<Order?> AddAsync(Order order)
+        {
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
+            return order;
+        }
+
+
+        public async Task<List<Order>> GetByStatusAsync(OrderStatus status)
+        {
+            return await _context.Orders.Where(
+                o => o.status == status
+                ). OrderByDescending(O=> O.OrderDate).ToListAsync();
+        }
+
+
+        public async Task<List<Order>> GetAllWithUserAsync(string userId) {
+
+            return await _context.Orders.Where(o=> o.UserId == userId).ToListAsync();
+
+        }
     }
 }
