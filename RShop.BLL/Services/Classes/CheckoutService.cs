@@ -21,13 +21,16 @@ namespace RShop.BLL.Services.Classes
         private readonly IOrderRepository _orderRepository;
         private readonly IEmailSender _emailSender;
         private readonly IOrderItemRepository orderIemRepository;
+        private readonly IProductRepository productRepository;
 
-        public CheckoutService(ICartRepository cartRepository, IOrderRepository orderRepository, IEmailSender emailSender, IOrderItemRepository orderIemRepository)
+        public CheckoutService(ICartRepository cartRepository, IOrderRepository orderRepository,
+            IEmailSender emailSender, IOrderItemRepository orderIemRepository, IProductRepository productRepository)
         {
             _cartRepository = cartRepository;
             _orderRepository = orderRepository;
             _emailSender = emailSender;
             this.orderIemRepository = orderIemRepository;
+            this.productRepository = productRepository;
         }
 
         public async Task<bool> HandlePaymentSuccessAsync(int OrderId)
@@ -41,6 +44,7 @@ namespace RShop.BLL.Services.Classes
                 subject= "Payment Successful - RShop";
                 var carts = await _cartRepository.GetUserCartAsync(order.UserId);
                 var orderItems = new List<OrderItems>();
+                var productUpdated = new List<(int productId, int quantity)>();
                 foreach (var item in carts)
                 {
                     var orderItem = new OrderItems
@@ -52,8 +56,11 @@ namespace RShop.BLL.Services.Classes
                         totalPrice = (double)(item.Product.Price * item.count)
                     };
                     orderItems.Add(orderItem);
+                    productUpdated.Add((item.ProductId, item.count));
                 }
                 await orderIemRepository.AddRangeAsync(orderItems);
+                await _cartRepository.ClearCartAsync(order.UserId);
+                await productRepository.DecreaseQuantityAsync(productUpdated);
 
                 body = $"<h1>Your payment was successful. Thank you for shopping with us!</h1><p>Your payment for order {OrderId}</p>";
             }

@@ -46,5 +46,9 @@ namespace RShop.BLL.Services.Classes
             return response;
         }
 
+        public async Task<bool> ClearCartAsync(string UserId)
+        {
+            return await _cartRepository.ClearCartAsync(UserId);
+        }
     }
 }

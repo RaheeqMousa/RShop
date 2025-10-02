@@ -12,5 +12,6 @@ namespace RShop.BLL.Services.Interfaces
     {
         Task<bool> AddToCartAsync(CartRequest request, string UserId);
         Task<CartResponseSummary> CartResponseSummaryAsync(string UserId);
+        Task<bool> ClearCartAsync(string UserId);
     }
 }
