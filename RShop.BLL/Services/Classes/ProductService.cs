@@ -10,6 +10,8 @@ using RShop.DAL.Models;
 using RShop.BLL.Services.Interfaces;
 using RShop.DAL.Repositories.Interfaces;
 using RShop.BLL.Interfaces;
+using Azure.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace RShop.BLL.Services.Classes
 {
@@ -33,7 +35,40 @@ namespace RShop.BLL.Services.Classes
                 entity.MainImage = imagePath;
             }
 
+            if (request.SubImages != null)
+            {
+                var subImagesPath = await _fileService.UploadManyAsync(request.SubImages);
+                entity.SubImages = subImagesPath.Select(img => new ProductImage { ImageName=img}).ToList();
+            }
+
             return _repository.Add(entity);
+        }
+
+        public async Task<List<ProductResponse>> GetAllProducts(HttpRequest request, bool onlyActive = false, int pageNumber = 1, int pageSize = 1) {
+            var products = _repository.getAllProductsWithImage();
+
+            if (onlyActive) { 
+                products= products.Where(products=>products.Status== Status.Active).ToList();
+            }
+
+
+            var pagedCount = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            return products.Select(p => new ProductResponse
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Quantity = p.quantity,
+                MainImageUrl = $"{request.Scheme}://{request.Host}/Images/{p.MainImage}",
+                SubImagesUrls = p.SubImages.Select(img => $"{request.Scheme}://{request.Host}/${p.MainImage}").ToList(),
+                Reviews = p.Reviews.Select(r=> new ReviewResponse { 
+                    Id = r.Id,
+                    Rate = r.Rate,
+                    Comment = r.Comment,
+                    FullName = r.FullName
+                }).ToList()
+            }).ToList();
+
         }
 
     }

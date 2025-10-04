@@ -10,5 +10,7 @@ namespace RShop.BLL.Interfaces
     public interface IFileService
     {
         Task<string> UploadFileAsync(IFormFile file);
+
+        Task<List<string>> UploadManyAsync(List<IFormFile> file);
     }
 }

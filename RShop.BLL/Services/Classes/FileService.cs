@@ -23,5 +23,24 @@ namespace RShop.BLL.Classes
 
             throw new Exception("File is null or empty");
         }
+
+        public async Task<List<string>> UploadManyAsync(List<IFormFile> files)
+        {
+            var fileNames = new List<string>();
+            foreach (var file in files)
+            {
+                if (file is not null) { 
+                    var filename = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", filename);
+                    using (var stream = File.OpenWrite(filePath)) { 
+                        await file.CopyToAsync(stream);
+                    }
+
+                    fileNames.Add(filename);
+                }
+            }
+
+            return fileNames;
+        }
     }
 }

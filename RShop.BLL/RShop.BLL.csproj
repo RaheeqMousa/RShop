@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.19" />
+    <PackageReference Include="QuestPDF" Version="2025.7.2" />
     <PackageReference Include="Stripe.net" Version="48.5.0" />
   </ItemGroup>
 

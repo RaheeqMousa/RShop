@@ -11,7 +11,7 @@ using RShop.DAL.Models;
 
 namespace RShop.BLL.Services.Classes
 {
-    public class UserService
+    public class UserService:IUserService
     {
         private readonly IUserService _userService;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -24,10 +24,11 @@ namespace RShop.BLL.Services.Classes
 
         public async Task<List<UserDTO>> GetAllAsync()
         {
-           var users=await _userService.GetAllAsync();
+           var users= _userManager.Users.ToList();
             var userDtos = new List<UserDTO>();
             foreach (var user in users)
             {
+
                 var roles = await _userManager.GetRolesAsync(user);
                 userDtos.Add(new UserDTO
                 {
