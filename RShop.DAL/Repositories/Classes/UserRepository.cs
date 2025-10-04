@@ -7,12 +7,13 @@ using RShop.DAL.Models;
 using RShop.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using RShop.DAL.Repositories.Interfaces;
 
 
 
 namespace RShop.DAL.Repositories.Classes
 {
-    public class UserRepository
+    public class UserRepository: IUserRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
         public UserRepository(UserManager<ApplicationUser> userManager)

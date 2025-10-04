@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using RShop.DAL.DTO.Responses;
 
 namespace RShop.DAL.Models
 {
@@ -26,5 +27,9 @@ namespace RShop.DAL.Models
         public Category Category { get; set; }
         public int? BrandId { get; set; }
         public Brand? brand { get; set; }
+
+        public List<ProductImage> SubImages { get; set; } = new List<ProductImage>();
+
+        public List<ReviewResponse> Reviews { get; set; } = new List<ReviewResponse>();
     }
 }

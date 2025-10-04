@@ -36,5 +36,7 @@ namespace RShop.DAL.Models
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
+        public List<OrderItems> OrderItems { get; set; } = new List<OrderItems>();
+
     }
 }

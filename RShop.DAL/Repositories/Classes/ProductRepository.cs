@@ -38,5 +38,9 @@ namespace RShop.DAL.Repositories.Classes
             await _context.SaveChangesAsync();
         }
 
+        public List<Product> getAllProductsWithImage() { 
+            return _context.Products.Include(p=> p.SubImages).Include(p=> p.Reviews).ThenInclude(r=> r.User).ToList();
+        }
+
     }
 }

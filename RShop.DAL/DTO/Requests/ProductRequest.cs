@@ -22,6 +22,7 @@ namespace RShop.DAL.DTO.Requests
         public int quantity { get; set; }
         public double Rating { get; set; }
         public IFormFile MainImage { get; set; }
+        public List<IFormFile> SubImages { get; set; }
 
         public int CategoryId { get; set; }
         public int? BrandId { get; set; }

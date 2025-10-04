@@ -17,8 +17,9 @@ namespace RShop.DAL.Models
         public Product Product { get; set; }
         public double totalPrice { get; set; }
         public int Count { get; set; }
-        public decimal Price { get; set; }
 
+        [Precision(5, 2)]
+        public decimal Price { get; set; }
 
 
     }

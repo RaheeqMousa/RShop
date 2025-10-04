@@ -46,5 +46,23 @@ namespace RShop.BLL.Services.Classes
             return await _context.Orders.Where(o=> o.UserId == userId).ToListAsync();
 
         }
+
+        public async Task<List<Order>> GetOrderByUserAsync(string userId) { 
+            return await _context.Orders.Include(o => o.User).OrderByDescending(o => o.OrderDate).ToListAsync();
+        }
+
+        public async Task<bool> ChangeStatusAsync(int orderId, OrderStatus status) { 
+            var order= await _context.Orders.FindAsync(orderId);
+            if (order == null) return false;
+            order.status = status;
+            var result =await _context.SaveChangesAsync();
+            return result>0;
+        }
+
+        public async Task<bool> UserHasApprovedOrderForProductAsync(string userId, int productId) {
+            return await _context.Orders.Include(o => o.OrderItems)
+                .AnyAsync(e=> e.UserId == userId && e.status == OrderStatus.Approved &&
+                e.OrderItems.Any(orderitem=> orderitem.ProductId==productId));
+        }
     }
 }
