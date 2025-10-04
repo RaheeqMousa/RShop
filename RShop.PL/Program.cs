@@ -43,7 +43,6 @@ namespace RShop.PL
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<ISeedData, SeedData>();
-            builder.Services.AddScoped<ICategoryRepository,CategoryRepository>();
             builder.Services.AddScoped<ICategoryService,CategoryService>();
             builder.Services.AddScoped<IProductService, BLL.Services.Classes.ProductService>();
             builder.Services.AddScoped<IFileService, BLL.Classes.FileService>();
@@ -51,13 +50,19 @@ namespace RShop.PL
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<ICheckoutService, BLL.Services.Classes.CheckoutService>();
             builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<IReviewService, BLL.Services.Classes.ReviewService>();
+            builder.Services.AddScoped<ReportService>();
 
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ICartRepository, CartRepository>();
             builder.Services.AddScoped<IBrandService, BrandService>();
-            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IEmailSender, EmailSetting>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

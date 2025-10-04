@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RShop.BLL.Interfaces;
 using RShop.BLL.Services.Interfaces;
 using RShop.DAL.DTO.Requests;
 
@@ -14,21 +16,21 @@ namespace RShop.PL.Areas.Admin.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IFileService _fileService;
 
-        public ProductsController(IProductService productService)
+        public ProductsController(IProductService productService, IFileService fileService)
         {
             _productService = productService;
+            _fileService = fileService;
         }
 
         // GET: api/Admin/Products
-        // Retrieves all products.
-        [HttpGet]
-        public IActionResult GetAll() => Ok(_productService.GetAll());
+        [HttpGet("")]
+        public IActionResult GetAll([FromQuery] int pageNumber=1, [FromQuery] int pageSize=5) {
+            return Ok(_productService.GetAllProducts(Request, false, pageNumber, pageSize));
+        }
 
-        
-        // GET: api/Admin/Products/{id}
-        // Retrieves a specific product by ID.
-        // Returns 404 if the product is not found.
+       
         [HttpGet("{id}")]
         public IActionResult Get([FromRoute] int id)
         {
@@ -45,19 +47,19 @@ namespace RShop.PL.Areas.Admin.Controllers
         
 
         // POST: api/Admin/Products
-        // Creates a new product.
-        // Note: ProductRequest includes IFormFile for image upload, so [FromForm] is used instead of [FromBody].
+        // Note: ProductRequest includes IFormFile for image upload
         [HttpPost("")]
-        public IActionResult Create([FromForm] ProductRequest request)
+        public async Task<IActionResult> Create([FromForm] ProductRequest request)
         {
             var result = _productService.CreateFile(request);
+            if (request.MainImage != null) { 
+                var imagePath= await _fileService.UploadFileAsync(request.MainImage);
+            }
             return Ok(result);
         }
 
         
         // PUT: api/Admin/Products/{id}
-        // Updates an existing product.
-        // Returns 400 if the request is null, 404 if the product is not found.
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] ProductRequest request)
         {
@@ -76,9 +78,6 @@ namespace RShop.PL.Areas.Admin.Controllers
             }
         }
 
-        // DELETE: api/Admin/Products/{id}
-        // Deletes a product by ID.
-        // Returns 404 if the product is not found.
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
