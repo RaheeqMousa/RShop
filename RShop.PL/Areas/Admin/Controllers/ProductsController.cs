@@ -51,7 +51,7 @@ namespace RShop.PL.Areas.Admin.Controllers
         [HttpPost("")]
         public async Task<IActionResult> Create([FromForm] ProductRequest request)
         {
-            var result = _productService.CreateFile(request);
+            var result = await _productService.CreateFile(request);
             if (request.MainImage != null) { 
                 var imagePath= await _fileService.UploadFileAsync(request.MainImage);
             }

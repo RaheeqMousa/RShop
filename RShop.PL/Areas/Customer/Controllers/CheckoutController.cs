@@ -30,9 +30,9 @@ namespace RShop.PL.Areas.Customer.Controllers
 
         [HttpGet("Success")]
         [AllowAnonymous]
-        public IActionResult success([FromRoute] int orderId)
+        public async Task<IActionResult> success([FromRoute] int orderId)
         {
-            var result = _checkoutService.HandlePaymentSuccessAsync(1);
+            bool result = await _checkoutService.HandlePaymentSuccessAsync(orderId);
             return Ok(result);
         }
 

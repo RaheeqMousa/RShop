@@ -51,9 +51,11 @@ namespace RShop.PL
             builder.Services.AddScoped<ICheckoutService, BLL.Services.Classes.CheckoutService>();
             builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IReviewService, BLL.Services.Classes.ReviewService>();
             builder.Services.AddScoped<ReportService>();
+            
 
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
