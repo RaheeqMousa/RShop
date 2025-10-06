@@ -78,19 +78,24 @@ namespace RShop.BLL.Services.Classes
                 FullName = registerRequest.FullName,
                 Email = registerRequest.Email,
                 UserName = registerRequest.UserName,
-                PhoneNumber = registerRequest.PhoneNumber
+                PhoneNumber = registerRequest.PhoneNumber,
+                
             };
 
             var result = await _userManager.CreateAsync(user, registerRequest.Password);
 
             if (result.Succeeded)
             {
+                if (!await _userManager.IsInRoleAsync(user, "Customer"))
+                {
+                    await _userManager.AddToRoleAsync(user, "Customer");
+                }
                 // Generate email confirmation token
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var encodedToken = Uri.EscapeDataString(token);
 
                 // Create confirmation URL
-                var emailUrl = $"{request.Scheme}:{request.Host}/api/identity/Account/ConfirmEmail?token={encodedToken}&userId={user.Id}";
+                var emailUrl = $"{request.Scheme}://{request.Host}/api/identity/Account/ConfirmEmail?token={encodedToken}&userId={user.Id}";
 
                 // Send confirmation email
                 await _emailSender.SendEmailAsync(user.Email, "Confirm your email",
@@ -100,6 +105,7 @@ namespace RShop.BLL.Services.Classes
                 return new UserResponse
                 {
                     Token = registerRequest.Email 
+
                 };
             }
             else
@@ -115,7 +121,7 @@ namespace RShop.BLL.Services.Classes
             {
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
             };
 
             var Roles = await _userManager.GetRolesAsync(user);

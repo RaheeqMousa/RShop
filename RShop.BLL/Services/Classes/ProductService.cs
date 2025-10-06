@@ -41,7 +41,8 @@ namespace RShop.BLL.Services.Classes
                 entity.SubImages = subImagesPath.Select(img => new ProductImage { ImageName=img}).ToList();
             }
 
-            return _repository.Add(entity);
+            var createdEntity = _repository.Add(entity);
+            return createdEntity.Id;
         }
 
         public async Task<List<ProductResponse>> GetAllProducts(HttpRequest request, bool onlyActive = false, int pageNumber = 1, int pageSize = 1) {

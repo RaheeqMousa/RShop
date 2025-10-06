@@ -12,6 +12,7 @@ using RShop.DAL.Models;
 using RShop.DAL.Repositories.Classes;
 using RShop.DAL.Repositories.Interfaces;
 using Stripe.Checkout;
+using Stripe.Climate;
 
 namespace RShop.BLL.Services.Classes
 {
@@ -38,6 +39,10 @@ namespace RShop.BLL.Services.Classes
             var order = await _orderRepository.GetUserByOrderAsync(OrderId); // Await the Task<Order> to get the actual Order object
             var subject = "";
             var body = "";
+            if (order == null)
+            {
+                return false;
+            }
 
             if (order.PaymentMethod == PaymentMethod.Visa)
             {
@@ -68,7 +73,7 @@ namespace RShop.BLL.Services.Classes
             {
                 subject = "Order placed successfully - RShop";
                 body = $"<h1>Your order was placed successful. Thank you for shopping with us!</h1><p>Your payment for order {OrderId}</p>";
-
+                await _cartRepository.ClearCartAsync(order.UserId);
             }
 
             await _emailSender.SendEmailAsync(order.User.Email, subject, body);
@@ -87,12 +92,15 @@ namespace RShop.BLL.Services.Classes
                 });
             }
 
-            Order order = new Order
+            DAL.Models.Order order = new DAL.Models.Order
             {
                 UserId = userId,
-                PaymentMethod = PaymentMethod.CashOnDelivery,
-                TotalAmount = (double)cartItems.Sum(i => i.Product.Price * i.count)
+                PaymentMethod = request.PaymentMethod,
+                TotalAmount = (double)cartItems.Sum(i => i.Product.Price * i.count),
+                status = OrderStatus.Pending
             };
+
+            await _orderRepository.AddAsync(order);
 
             if (request.PaymentMethod == PaymentMethod.CashOnDelivery)
             {
@@ -100,7 +108,8 @@ namespace RShop.BLL.Services.Classes
                 return await Task.FromResult(new CheckoutResponse
                 {
                     Success = true,
-                    Message = "Cash payment processed successfully."
+                    Message = "Cash payment processed successfully.",
+                    OrderId= order.Id
                 });
             }
 
@@ -127,7 +136,7 @@ namespace RShop.BLL.Services.Classes
                                 Name = item.Product.Name,
                                 Description = item.Product.Description,
                             },
-                            UnitAmount = (long)item.Product.Price,
+                            UnitAmount = (long)(item.Product.Price*100),
                         },
                         Quantity = item.count,
                     });
@@ -137,13 +146,15 @@ namespace RShop.BLL.Services.Classes
                 var session = service.Create(options);
 
                 order.PaymentId = session.Id;
+                await _orderRepository.UpdateAsync(order);
 
                 return new CheckoutResponse()
                 {
                     Success = true,
                     Message = "Payment session created successfully.",
                     PaymentId= session.Id,
-                    Url = session.Url
+                    Url = session.Url,
+                    OrderId = order.Id
                 };
             }
 

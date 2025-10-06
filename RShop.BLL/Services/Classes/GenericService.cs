@@ -27,7 +27,8 @@ namespace RShop.BLL.Services.Classes
         public int Create(TRequest request)
         {
             var entity = request.Adapt<TEntity>();
-            return genericRepository.Add(entity);
+            var e=genericRepository.Add(entity);
+            return e.Id;
         }
 
         public int Delete(int id)

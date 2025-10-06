@@ -8,17 +8,18 @@ using Microsoft.AspNetCore.Identity;
 using RShop.BLL.Services.Interfaces;
 using RShop.DAL.DTO.Responses;
 using RShop.DAL.Models;
+using RShop.DAL.Repositories.Interfaces;
 
 namespace RShop.BLL.Services.Classes
 {
     public class UserService:IUserService
     {
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserService(IUserService userService, UserManager<ApplicationUser> userManager)
+        public UserService(IUserRepository userRepos, UserManager<ApplicationUser> userManager)
         {
-            _userService = userService;
+            _userRepository = userRepos;
             _userManager = userManager;
         }
 
@@ -47,27 +48,27 @@ namespace RShop.BLL.Services.Classes
 
         public async Task<UserDTO> GetByIdAsync(string id)
         {
-            var user= await _userService.GetByIdAsync(id);
+            var user= await _userRepository.GetByIdAsync(id);
             return user.Adapt<UserDTO>();
         }
 
         public async Task<bool> BlockUserAsync(string email, int minutes)
         {
-            return await _userService.BlockUserAsync(email, minutes);
+            return await _userRepository.BlockUserAsync(email, minutes);
         }
 
         public async Task<bool> UnblockUserAsync(string email)
         {
-            return await _userService.UnblockUserAsync(email);
+            return await _userRepository.UnblockUserAsync(email);
         }
         public async Task<bool> IsBlockedAsync(string userId)
         {
-            return await _userService.IsBlockedAsync(userId);
+            return await _userRepository.IsBlockedAsync(userId);
         }
 
         public async Task<bool> ChangeUserRoleAsync(string userId, string newRole)
         {
-           return await _userService.ChangeUserRoleAsync(userId, newRole);
+           return await _userRepository.ChangeUserRoleAsync(userId, newRole);
         }
     }
 }
