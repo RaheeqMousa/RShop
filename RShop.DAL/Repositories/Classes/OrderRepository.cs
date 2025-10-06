@@ -18,11 +18,12 @@ namespace RShop.BLL.Services.Classes
             _context = context;
         }
 
-        public async Task<Order> GetUserByOrderAsync(int order)
+        public async Task<Order> GetUserByOrderAsync(int orderId)
         {
-            var orders = await _context.Orders.Include(o => o.User)
-                .FirstOrDefaultAsync(o => o.Id == order);
-            return orders;
+            var order = await _context.Orders
+            .Include(o => o.User)
+            .FirstOrDefaultAsync(o => o.Id == orderId);
+            return order;
         }
 
         public async Task<Order?> AddAsync(Order order)
@@ -63,6 +64,12 @@ namespace RShop.BLL.Services.Classes
             return await _context.Orders.Include(o => o.OrderItems)
                 .AnyAsync(e=> e.UserId == userId && e.status == OrderStatus.Approved &&
                 e.OrderItems.Any(orderitem=> orderitem.ProductId==productId));
+        }
+
+        public async Task UpdateAsync(Order order)
+        {
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
         }
     }
 }

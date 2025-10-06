@@ -19,10 +19,11 @@ namespace RShop.DAL.Repositories.Classes
             context = dbcontext;
         }
 
-        public int Add(T entity)
+        public T Add(T entity)
         {
             context.Set<T>().Add(entity);
-            return context.SaveChanges();
+            context.SaveChanges();
+            return entity;
         }
 
         public IEnumerable<T> getAll(bool withTracking = false)

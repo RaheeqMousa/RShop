@@ -42,7 +42,7 @@ namespace RShop.DAL.Data
             modelBuilder.Entity<ApplicationUser>().ToTable("Users");
             modelBuilder.Entity<IdentityRole>().ToTable("Roles");
             modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UsersRoles");
-            
+
         }
     }
 }

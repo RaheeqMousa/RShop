@@ -9,7 +9,7 @@ namespace RShop.DAL.Repositories.Interfaces
 {
     public interface IGenericRepository<T> where T: BaseModel
     {
-        int Add(T entity);
+        T Add(T entity);
         IEnumerable<T> getAll(bool withTracking = false);
         T? getById(int Id);
         int Update(T entity);

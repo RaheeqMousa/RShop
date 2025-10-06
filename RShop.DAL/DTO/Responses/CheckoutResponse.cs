@@ -13,5 +13,6 @@ namespace RShop.DAL.DTO.Responses
         public string? Url { get; set; }
 
         public string? PaymentId { get; set; }
+        public int? OrderId { get; set; }
     } 
 }

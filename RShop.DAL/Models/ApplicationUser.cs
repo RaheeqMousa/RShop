@@ -15,5 +15,6 @@ namespace RShop.DAL.Models
         public string? CodeResetPassword { get; set; }
         public DateTime? PasswordResetCodeExpiry { get; set; }
 
+
     }
 }

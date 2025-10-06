@@ -17,5 +17,7 @@ namespace RShop.BLL.Services.Interfaces
         Task<List<Order>> GetOrderByUserAsync(string userId);
         Task<bool> UserHasApprovedOrderForProductAsync(string userId, int productId);
 
+        Task UpdateAsync(Order order);
+
     }
 }

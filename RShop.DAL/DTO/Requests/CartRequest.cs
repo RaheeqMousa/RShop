@@ -8,7 +8,7 @@ namespace RShop.DAL.DTO.Requests
 {
     public class CartRequest
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public int ProductId { get; set; }
         public int count { get; set; }
     }
